@@ -1,0 +1,18 @@
+{
+  "geofenceName": "pedestrianGeofence",
+  "geofenceUniqueID": "superDemoPedestrianGeofence",
+  "geofenceModificationDate": "11/27/2017 04:52PM",
+  "role": "PEDESTRIAN",
+  "regions": [
+    {
+      "heading": 180.0,
+      "headingEpsilon": 180.0,
+      "vertices": [
+        {"latitude": 38.907937, "longitude": -77.025115},
+        {"latitude": 38.907887, "longitude": -77.020918},
+        {"latitude": 38.902406, "longitude": -77.020637},
+        {"latitude": 38.902386, "longitude": -77.025192}
+      ]
+    }
+  ]
+}

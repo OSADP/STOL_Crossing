@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TO 14 App</string>
+    <string name="title_activity_geofence_view">Map View</string>
+    <string name="title_activity_role_select">STOL TO 14 App</string>
+    <string name="role_select_prompt">Select a role:</string>
+    <string name="role_pedestrian">Pedestrian</string>
+    <string name="role_driver">Driver</string>
+    <string name="server_disconnected_notification">Server disconnected...</string>
+    <string name="driver_notification">Pedestrian Ahead</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

@@ -1,0 +1,18 @@
+{
+  "geofenceName": "driverGeofence",
+  "geofenceUniqueID": "superDemoDriverGeofence",
+  "geofenceModificationDate": "11/27/2017 04:48PM",
+  "role": "MOTORIST",
+  "regions": [
+    {
+      "heading": 0.0,
+      "headingEpsilon": 89.0,
+      "vertices": [
+        {"latitude": 38.95671, "longitude": -77.15101},
+        {"latitude": 38.95673, "longitude": -77.15125},
+        {"latitude": 38.95618, "longitude": -77.15120},
+        {"latitude": 38.95624, "longitude": -77.15088}
+      ]
+    }
+  ]
+}
