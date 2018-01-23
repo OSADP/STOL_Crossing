@@ -18,7 +18,7 @@ public class Constants {
     public static final int vehicleTriangleColor = Color.BLUE;
 
     // REST API parameters
-    public static final String serverBaseUrl = "127.0.0.1";
+    public static final String serverBaseUrl = "<REDACTED>";
     public static final String relDriverGeofenceUrl = "/driver/geofence";
     public static final String relPedGeofenceUrl = "/ped/geofence";
     public static final String relCrossingRequestUrl = "/ped/requestCrossing";
