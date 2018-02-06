@@ -1,5 +1,4 @@
-Key contributors to the development of the STOL Crossing Request software and conducting research using the application include:
+Key contributors to the development of the Pedestrian Mid-block Crossing Application software and conducting research using the application include:
 Kyle Rush, Medha Mafruhatul, Stacy Balk of Leidos
 Gene McHale of FHWA
 Austin Angulo and Sean Laffey of University of Virginia
-

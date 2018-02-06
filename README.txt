@@ -1,8 +1,8 @@
 Open Source Overview
 ============================
-STOL Crossing Request
+Pedestrian Mid-block Crossing Application
 Version 1.0.0
-The STOL Crossing Request application is designed to allow pedestrians at configured mid-block cross walks communicate their intent to cross with drivers approaching the same mid-block cross walk. This is accomplished through usage of an android app and a cloud server component. Using the android app, the pedestrian (while in a geofence near the cross walk) can instruct the server to begin a message broadcast to all driver devices for a period of time long enough to complete the crossing. The driver's android app resembles an in-vehicle navigation app and serves to provide audio-visual feedback to the driver when it receives a broadcast from the server.
+The Pedestrian Mid-block Crossing Application is designed to allow pedestrians at configured mid-block cross walks communicate their intent to cross with drivers approaching the same mid-block cross walk. This is accomplished through usage of an android app and a cloud server component. Using the android app, the pedestrian (while in a geofence near the cross walk) can instruct the server to begin a message broadcast to all driver devices for a period of time long enough to complete the crossing. The driver's android app resembles an in-vehicle navigation app and serves to provide audio-visual feedback to the driver when it receives a broadcast from the server.
 
 License information
 -------------------
@@ -16,8 +16,8 @@ permissions and limitations under the License.
 
 System Requirements
 -------------------------
-The STOL Crossing Request Android application can run on any android version newer than Android 6.0 and was tested
-on Samsung Galaxy S6 and Samsung Galaxy Tab E devices. To compile the STOL Crossing Request Android application it
+The Pedestrian Mid-block Crossing Android application can run on any android version newer than Android 6.0 and was tested
+on Samsung Galaxy S6 and Samsung Galaxy Tab E devices. To compile the Pedestrian Mid-block Crossing Android application it
 is recommended to use Android Studio.
 
 The server component requires a Linux server with the Java 8 Runtime Environment (JRE) installed. Gradle version 2.0+
@@ -25,10 +25,10 @@ is required for compilation of the server component, in addition to the Java 8 D
 
 Documentation
 -------------
-The STOL Crossing Request is packaged with a Word document describing installation, configuration, and usage of the
+The Pedestrian Mid-block Crossing Application is packaged with a Word document describing installation, configuration, and usage of the
 Server and Android application components. Also included is are the performance testing documentation and data sets.
 
 Web sites
 ---------
-The STOL Crossing Request software is distributed through the USDOT's JPO Open Source Application Development Portal (OSADP)
+The Pedestrian Mid-block Crossing Application software is distributed through the USDOT's JPO Open Source Application Development Portal (OSADP)
 http://itsforge.net/ 

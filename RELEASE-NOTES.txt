@@ -1,2 +1,2 @@
-STOL Crossing Request Release V1.0.0:
+Pedestrian Mid-block Crossing Application Release V1.0.0:
 - Initial release of software to OSADP portal. See attached documentation for descriptions of baseline functionality available in v1.0.0
