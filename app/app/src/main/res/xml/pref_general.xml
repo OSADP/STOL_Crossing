@@ -10,7 +10,7 @@
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
     <EditTextPreference
         android:capitalize="words"
-        android:defaultValue="http://sample-env.wi6rp8ykdn.us-east-1.elasticbeanstalk.com"
+        android:defaultValue="YOUR_SERVER_URL_HERE"
         android:inputType="textCapWords"
         android:key="server_url"
         android:maxLines="1"
