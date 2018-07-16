@@ -4,17 +4,19 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,25 +26,44 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import gov.dot.fhwa.saxton.crossingrequest.R;
 import gov.dot.fhwa.saxton.crossingrequest.fragments.DriverDataReportTaskFragment;
 import gov.dot.fhwa.saxton.crossingrequest.fragments.DriverNotificationFragment;
+import gov.dot.fhwa.saxton.crossingrequest.fragments.PedDataReportTaskFragment;
+import gov.dot.fhwa.saxton.crossingrequest.geometry.ConvexPolygonRegion;
 import gov.dot.fhwa.saxton.crossingrequest.geometry.Geofence;
 import gov.dot.fhwa.saxton.crossingrequest.geometry.GeofenceFactory;
+import gov.dot.fhwa.saxton.crossingrequest.messages.DriverDataReport;
 import gov.dot.fhwa.saxton.crossingrequest.messages.EventReport;
 import gov.dot.fhwa.saxton.crossingrequest.messages.GeofenceDescription;
+import gov.dot.fhwa.saxton.crossingrequest.messages.NotificationStatus;
 import gov.dot.fhwa.saxton.crossingrequest.messages.UserRole;
+import gov.dot.fhwa.saxton.crossingrequest.utils.Constants;
 import gov.dot.fhwa.saxton.crossingrequest.utils.RunningAverageTracker;
 
+import android.media.MediaPlayer;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.sql.Driver;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.dataReportDelay;
 import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.defaultMapZoom;
+import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.relDriverDataReportUrl;
 import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.relDriverEventReportUrl;
 import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.relDriverGeofenceUrl;
 import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.serverBaseUrl;
@@ -75,11 +96,15 @@ public class DriverViewActivity extends FragmentActivity implements OnMapReadyCa
     private static final String TAG_DRIVER_DATA_REPORT_TASK_FRAGMENT = "driver_data_report_task_fragment";
 
     /**
-     * Init method for this activity, loads the necessary data and instantiates objects
+     * Init method for this activity
+     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Constants.serverBaseUrl = PreferenceManager.getDefaultSharedPreferences(this).getString("server_url", "http://sample-env.wi6rp8ykdn.us-east-1.elasticbeanstalk.com");
+
         setContentView(R.layout.activity_geofence_view);
 
         tts = new TextToSpeech(this, this);
@@ -178,13 +203,21 @@ public class DriverViewActivity extends FragmentActivity implements OnMapReadyCa
                 template.getMessageConverters().add(mapper);
 
                 long commsStartTime = System.currentTimeMillis();
-                desc = template.getForObject(serverBaseUrl + relDriverGeofenceUrl, GeofenceDescription.class);
-                long commsEndTime = System.currentTimeMillis();
-                latencyTracker.addDatapoint(commsEndTime - commsStartTime);
+                try {
+                    desc = template.getForObject(serverBaseUrl + relDriverGeofenceUrl, GeofenceDescription.class);
+                    long commsEndTime = System.currentTimeMillis();
+                    latencyTracker.addDatapoint(commsEndTime - commsStartTime);
 
-                driverGeofence = new GeofenceFactory().buildGeofence(desc);
-                Log.i(TAG, "doInBackground: Successfully received driver geofence from server.");
-                Log.i(TAG, "doInBackground: " + driverGeofence.toString());
+                    driverGeofence = new GeofenceFactory().buildGeofence(desc);
+                    Log.i(TAG, "doInBackground: Successfully received driver geofence from server.");
+                    Log.i(TAG, "doInBackground: " + driverGeofence.toString());
+                } catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Error communicating with server.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
                 return null;
             }
             @Override
@@ -197,6 +230,41 @@ public class DriverViewActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     public void onResume() {
         super.onResume();
+
+        Constants.darkMode = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("night_mode", false);
+
+        if (mMap != null) {
+            if (Constants.darkMode) {
+                try {
+                    // Customise the styling of the base map using a JSON object defined
+                    // in a raw resource file.
+                    boolean success = mMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    this, R.raw.night_mode));
+
+                    if (!success) {
+                        Log.e(TAG, "Style parsing failed.");
+                    }
+                } catch (Resources.NotFoundException e) {
+                    Log.e(TAG, "Can't find style. Error: ", e);
+                }
+            } else {
+                try {
+                    // Customise the styling of the base map using a JSON object defined
+                    // in a raw resource file.
+                    boolean success = mMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    this, R.raw.day_mode));
+
+                    if (!success) {
+                        Log.e(TAG, "Style parsing failed.");
+                    }
+                } catch (Resources.NotFoundException e) {
+                    Log.e(TAG, "Can't find style. Error: ", e);
+                }
+            }
+        }
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "onCreate: Check for fine location permissions failed.");
             ActivityCompat.requestPermissions(this,
@@ -250,6 +318,36 @@ public class DriverViewActivity extends FragmentActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         Log.i(TAG, "onMapReady: Map is ready ");
         mMap = googleMap;
+
+        if (Constants.darkMode) {
+            try {
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                boolean success = mMap.setMapStyle(
+                        MapStyleOptions.loadRawResourceStyle(
+                                this, R.raw.night_mode));
+
+                if (!success) {
+                    Log.e(TAG, "Style parsing failed.");
+                }
+            } catch (Resources.NotFoundException e) {
+                Log.e(TAG, "Can't find style. Error: ", e);
+            }
+        } else {
+            try {
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                boolean success = mMap.setMapStyle(
+                        MapStyleOptions.loadRawResourceStyle(
+                                this, R.raw.day_mode));
+
+                if (!success) {
+                    Log.e(TAG, "Style parsing failed.");
+                }
+            } catch (Resources.NotFoundException e) {
+                Log.e(TAG, "Can't find style. Error: ", e);
+            }
+        }
 
         // Add a marker in Sydney and move the camera
         // mMap.addMarker(new MarkerOptions().position(tfhrcLatLng).title("Turner Fairbanks Highway Research Center"));
@@ -364,12 +462,9 @@ public class DriverViewActivity extends FragmentActivity implements OnMapReadyCa
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        // STUB
+
     }
 
-    /**
-     * Callback invoked once the text-to-speech engine is ready for usage
-     */
     @Override
     public void onInit(int i) {
         ttsInited = true;
@@ -396,11 +491,22 @@ public class DriverViewActivity extends FragmentActivity implements OnMapReadyCa
                         UserRole.MOTORIST);
 
                 long commsStartTime = System.currentTimeMillis();
-                template.postForObject(serverBaseUrl + relDriverEventReportUrl, report, Void.class);
-                long commsEndTime = System.currentTimeMillis();
-                latencyTracker.addDatapoint(commsEndTime - commsStartTime);
+                try {
+                    template.postForObject(serverBaseUrl + relDriverEventReportUrl, report, Void.class);
 
-                Log.i(TAG, "doInBackground: Successfully reported driver event " + typeTmp.toString() + " to server.");
+                    long commsEndTime = System.currentTimeMillis();
+                    latencyTracker.addDatapoint(commsEndTime - commsStartTime);
+
+                    Log.i(TAG, "doInBackground: Successfully reported driver event " + typeTmp.toString() + " to server.");
+                } catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Error communicating with server.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Log.w(TAG, "Error communicating with server");
+                }
+
                 return null;
             }
         }.execute();

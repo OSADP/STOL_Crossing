@@ -1,12 +1,16 @@
 package gov.dot.fhwa.saxton.crossingrequest.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
+
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -16,11 +20,13 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+
 import gov.dot.fhwa.saxton.crossingrequest.messages.NotificationStatus;
 import gov.dot.fhwa.saxton.crossingrequest.messages.PedestrianDataReport;
 import gov.dot.fhwa.saxton.crossingrequest.utils.RunningAverageTracker;
 
 import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.dataReportDelay;
+import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.relDriverDataReportUrl;
 import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.relPedDataReportUrl;
 import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.serverBaseUrl;
 
@@ -31,8 +37,6 @@ import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.serverBaseUrl;
  * to handle interaction events.
  * Use the {@link PedDataReportTaskFragment#newInstance} factory method to
  * create an instance of this fragment.
- *
- * Persistent background fragment for handling of data report uploads to server for PedestrianViewActivity.
  */
 public class PedDataReportTaskFragment extends Fragment {
 
@@ -97,18 +101,12 @@ public class PedDataReportTaskFragment extends Fragment {
         this.loc.set(loc);
     }
 
-    /**
-     * Inteface which activities must implement to interact with this fragment
-     */
     public interface PedDataReportListener {
         void onNotificationActivate();
         void onNotificationDeactivate();
         void onNewLastServerComms(long timestamp);
     }
 
-    /**
-     * AsyncTask implementation for handling of the actual data upload to server
-     */
     private class PedDataReportTask extends AsyncTask<Void, Void, Void> {
         private NotificationStatus serverResponse = null;
         private AtomicBoolean running = new AtomicBoolean(true);
@@ -145,15 +143,28 @@ public class PedDataReportTaskFragment extends Fragment {
                     Log.i(TAG, "doInBackground: Sent " + dataReport + " to server.");
 
                     long commsStartTime = System.currentTimeMillis();
-                    serverResponse = template.postForObject(
-                            serverBaseUrl + relPedDataReportUrl,
-                            dataReport,
-                            NotificationStatus.class);
+                    try {
+                        serverResponse = template.postForObject(
+                                serverBaseUrl + relPedDataReportUrl,
+                                dataReport,
+                                NotificationStatus.class);
 
-                    long commsEndTime = System.currentTimeMillis();
-                    latencyTracker.addDatapoint(commsEndTime - commsStartTime);
-                    Log.i(TAG, "run: Pedestrian data report complete. Latency: " + (commsEndTime - commsStartTime));
-                    lastServerComms = commsEndTime;
+                        long commsEndTime = System.currentTimeMillis();
+                        latencyTracker.addDatapoint(commsEndTime - commsStartTime);
+                        Log.i(TAG, "run: Pedestrian data report complete. Latency: " + (commsEndTime - commsStartTime));
+                        lastServerComms = commsEndTime;
+                    } catch (Exception e) {
+                        final Activity parent = getActivity();
+
+                        if (parent != null) {
+                            parent.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(parent.getApplicationContext(), "Error communicating with server.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                        Log.w(TAG, "Error communicating with server");
+                    }
 
                 } catch (Exception e) {
                     Log.e(TAG, "doInBackground: Error communicating with server", e);

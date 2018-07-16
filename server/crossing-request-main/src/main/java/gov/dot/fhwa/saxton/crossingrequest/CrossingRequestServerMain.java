@@ -35,25 +35,16 @@ public class CrossingRequestServerMain {
     @Value("${logging.dataFile}")
     protected String dataLogFilepath;
 
-    /**
-     * Instantiate the notification status model
-     */
     @Bean
     public NotificationStatusModel getNotificationStatusModel() {
         return new NotificationStatusModel();
     }
 
-    /**
-     * Instantiate the geofence factory
-     */
     @Bean
     public GeofenceFactory getGeofenceFactory() {
         return new GeofenceFactory();
     }
 
-    /**
-     * Instantiate the data recording logger
-     */
     @Bean
     public CsvLogger getCsvLogger() {
         CsvLogger dataLogger = new CsvLogger();
@@ -61,9 +52,6 @@ public class CrossingRequestServerMain {
         return dataLogger;
     }
 
-    /**
-     * Instantiate the geometry model for the midblock crossing
-     */
     @Bean
     public CrossingGeometryModel getCrossingGeometryModel() {
         CrossingGeometryModel cgm = new CrossingGeometryModel();
@@ -72,15 +60,11 @@ public class CrossingRequestServerMain {
         return cgm;
     }
 
-    /**
-     * Instantiate the notification status model
-     */
     @Bean
     public NotificationStatusModel notificationStatusModel() {
         return new NotificationStatusModel();
     }
 
-    // Spring application context to store all our DI objects
     private static ApplicationContext ctx;
 
     /**

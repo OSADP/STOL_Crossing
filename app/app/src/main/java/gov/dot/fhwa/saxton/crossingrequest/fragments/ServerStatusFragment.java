@@ -1,17 +1,20 @@
 package gov.dot.fhwa.saxton.crossingrequest.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -21,6 +24,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import gov.dot.fhwa.saxton.crossingrequest.R;
+import gov.dot.fhwa.saxton.crossingrequest.utils.Constants;
 
 import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.relStatusUrl;
 import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.serverBaseUrl;
@@ -80,6 +84,9 @@ public class ServerStatusFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Constants.serverBaseUrl = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getString("server_url", "http://sample-env.wi6rp8ykdn.us-east-1.elasticbeanstalk.com");
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -110,7 +117,19 @@ public class ServerStatusFragment extends Fragment {
 
                                 long commsStartTime = System.currentTimeMillis();
                                 try {
-                                    Boolean b = template.getForObject(serverBaseUrl + relStatusUrl, Boolean.class);
+                                    try {
+                                        Boolean b = template.getForObject(serverBaseUrl + relStatusUrl, Boolean.class);
+                                    } catch (Exception e) {
+                                        final Activity parent = getActivity();
+
+                                        if (parent != null) {
+                                            parent.runOnUiThread(new Runnable() {
+                                                public void run() {
+                                                    Toast.makeText(parent.getApplicationContext(), "Error communicating with server.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    }
                                     long commsEndTime = System.currentTimeMillis();
                                     Log.i(TAG, "run: Server status check complete. Latency: " + (commsEndTime - commsStartTime));
                                     lastServerCommTime = commsEndTime;

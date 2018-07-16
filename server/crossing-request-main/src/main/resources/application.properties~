@@ -1,0 +1,9 @@
+notification.duration_s=60.0
+server.port=5000
+geometry.pedDescriptionFile=data/pedestrian_geofence.json
+geometry.driverDescriptionFile=data/driver_geofence.json
+
+logging.eventFile=datalogs/event.csv
+logging.dataFile=datalogs/data.csv
+logging.file=logs/server.log
+logging.datapath=datalogs/

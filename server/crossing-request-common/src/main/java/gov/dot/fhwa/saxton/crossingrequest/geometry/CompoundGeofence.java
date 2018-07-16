@@ -5,8 +5,6 @@ import java.util.List;
 
 /**
  * Compound geofence containing multiple regions
- * <p>
- * Insideness is the logical OR of being inside any of of the consitutuent geofences
  */
 public class CompoundGeofence extends Geofence {
     protected final List<ConvexPolygonRegion> regions;

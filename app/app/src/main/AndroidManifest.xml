@@ -8,7 +8,7 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -33,8 +33,7 @@
         <activity
             android:name=".activities.DriverViewActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_geofence_view">
-        </activity>
+            android:label="@string/title_activity_geofence_view"></activity>
         <activity
             android:name=".activities.RoleSelectActivity"
             android:label="@string/title_activity_role_select">
@@ -45,8 +44,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:configChanges="orientation|screenSize"
-            android:name=".activities.PedestrianViewActivity"></activity>
+            android:name=".activities.PedestrianViewActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
+        <activity android:name=".activities.PreferencesActivity" />
     </application>
 
 </manifest>

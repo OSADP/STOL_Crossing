@@ -21,58 +21,34 @@ public class PedestrianDataReport {
         this.avgLatency = avgLatency;
     }
 
-    /**
-     * Set the timestamp at which this pedestrian data report was generated
-     */
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    /**
-     * Set the position measured by the GPS in the pedestrian device
-     */
     public void setPosition(Location position) {
         this.position = position;
     }
 
-    /**
-     * Get the location accuracy (in m, radius) reported by the pedestrian device
-     */
     public double getLocationAccuracy() {
         return locationAccuracy;
     }
 
-    /**
-     * Set the location accuracy (in m, radius) reported by the pedestrian device
-     */
     public void setLocationAccuracy(double locationAccuracy) {
         this.locationAccuracy = locationAccuracy;
     }
 
-    /**
-     * Get the average latency (in ms) over the last 10 timesteps between the server and the driver device
-     */
     public double getAvgLatency() {
         return avgLatency;
     }
 
-    /**
-     * Set the average latency (in ms) over the last 10 timesteps between the server and the driver device
-     */
     public void setAvgLatency(double avgLatency) {
         this.avgLatency = avgLatency;
     }
 
-    /**
-     * Get the timestamp at which this pedestrian data report was generated
-     */
     public long getTimestamp() {
         return timestamp;
     }
 
-    /**
-     * Get the position data reported by the GPS in the pedestrian device
-     */
     public Location getPosition() {
         return position;
     }

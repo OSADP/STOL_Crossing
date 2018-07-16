@@ -31,114 +31,66 @@ public class DriverDataReport {
         this.avgLatency = avgLatency;
     }
 
-    /**
-     * Get the average latency (in ms) over the last 10 timesteps between the server and the driver device
-     */
     public double getAvgLatency() {
         return avgLatency;
     }
 
-    /**
-     * Set the average latency (in ms) over the last 10 timesteps between the server and the driver device
-     */
     public void setAvgLatency(double avgLatency) {
         this.avgLatency = avgLatency;
     }
 
-    /**
-     * Get the location accuracy (in m, radius) of the driver device GPS
-     */
     public double getLocationAccuracy() {
         return locationAccuracy;
     }
 
-    /**
-     * Set the location accuracy (in m, radius) of the driver device GPS
-     */
     public void setLocationAccuracy(double locationAccuracy) {
         this.locationAccuracy = locationAccuracy;
     }
 
-    /**
-     * Get the accuracy (in +/- m/s) of the driver device's speed measurement
-     */
     public double getSpeedAccuracy() {
         return speedAccuracy;
     }
 
-    /**
-     * Set the accuracy (in +/- m/s) of the driver device's speed measurement
-     */
     public void setSpeedAccuracy(double speedAccuracy) {
         this.speedAccuracy = speedAccuracy;
     }
 
-    /**
-     * Get the accuracy (in +/- deg) of the driver device's heading measurement
-     */
     public double getHeadingAccuracy() {
         return headingAccuracy;
     }
 
-    /**
-     * Set the accuracy (in +/- deg) of the driver device's heading measurement
-     */
     public void setHeadingAccuracy(double headingAccuracy) {
         this.headingAccuracy = headingAccuracy;
     }
 
-    /**
-     * Get the timestamp of this message generation formatted as a ms resolution Unix timestamp
-     */
     public long getTimestamp() {
         return timestamp;
     }
 
-    /**
-     * Get the GPS position as reported by the driver's device
-     */
     public Location getPosition() {
         return position;
     }
 
-    /**
-     * Get the speed (in m/s) as reported by the driver's device
-     */
     public double getSpeed() {
         return speed;
     }
 
-    /**
-     * Get the heading (in deg) as reported by the driver's device
-     */
     public double getHeading() {
         return heading;
     }
 
-    /**
-     * Get the timestamp of this message generation formatted as a ms resolution Unix timestamp
-     */
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    /**
-     * Set the GPS position as reported by the driver's device
-     */
     public void setPosition(Location position) {
         this.position = position;
     }
 
-    /**
-     * Set the speed (in m/s) as reported by the driver's device
-     */
     public void setSpeed(double speed) {
         this.speed = speed;
     }
 
-    /**
-     * Set the heading (in deg) as reported by the driver's device
-     */
     public void setHeading(double heading) {
         this.heading = heading;
     }

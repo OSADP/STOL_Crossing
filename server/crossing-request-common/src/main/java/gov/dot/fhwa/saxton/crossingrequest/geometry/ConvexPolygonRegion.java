@@ -41,16 +41,10 @@ public class ConvexPolygonRegion implements Region {
         this.heading = heading;
     }
 
-    /**
-     * Get the acceptable heading error for this region. Headings may be within heading +/- headingEpsilon
-     */
     public double getHeadingEpsilon() {
         return headingEpsilon;
     }
 
-    /**
-     * Set the acceptable heading error for this region. Headings may be within heading +/- headingEpsilon
-     */
     public void setHeadingEpsilon(double headingEpsilon) {
         this.headingEpsilon = headingEpsilon;
     }
@@ -58,7 +52,7 @@ public class ConvexPolygonRegion implements Region {
     /**
      * Use a raycasting algorithm to determine how many edges of the polygon are crossed by an infinite
      * line extended from our point.
-     * <p>
+     *
      * Implementation of W. Randolph Franklin's algorithm published at:
      * https://wrf.ecse.rpi.edu//Research/Short_Notes/pnpoly.html
      */

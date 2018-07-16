@@ -1,18 +1,22 @@
 package gov.dot.fhwa.saxton.crossingrequest.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +31,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -36,6 +41,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import gov.dot.fhwa.saxton.crossingrequest.R;
 import gov.dot.fhwa.saxton.crossingrequest.fragments.PedDataReportTaskFragment;
@@ -46,6 +53,7 @@ import gov.dot.fhwa.saxton.crossingrequest.messages.CrossingRequestResponse;
 import gov.dot.fhwa.saxton.crossingrequest.messages.EventReport;
 import gov.dot.fhwa.saxton.crossingrequest.messages.GeofenceDescription;
 import gov.dot.fhwa.saxton.crossingrequest.messages.UserRole;
+import gov.dot.fhwa.saxton.crossingrequest.utils.Constants;
 import gov.dot.fhwa.saxton.crossingrequest.utils.RunningAverageTracker;
 
 import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.defaultMapZoom;
@@ -86,6 +94,9 @@ public class PedestrianViewActivity extends AppCompatActivity implements OnMapRe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Constants.serverBaseUrl = PreferenceManager.getDefaultSharedPreferences(this).getString("server_url", "http://sample-env.wi6rp8ykdn.us-east-1.elasticbeanstalk.com");
+
         setContentView(R.layout.activity_pedestrian_view);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -116,6 +127,41 @@ public class PedestrianViewActivity extends AppCompatActivity implements OnMapRe
     @Override
     public void onResume() {
         super.onResume();
+
+        Constants.darkMode = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("night_mode", false);
+
+        if (mMap != null) {
+            if (Constants.darkMode) {
+                try {
+                    // Customise the styling of the base map using a JSON object defined
+                    // in a raw resource file.
+                    boolean success = mMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    this, R.raw.night_mode));
+
+                    if (!success) {
+                        Log.e(TAG, "Style parsing failed.");
+                    }
+                } catch (Resources.NotFoundException e) {
+                    Log.e(TAG, "Can't find style. Error: ", e);
+                }
+            } else {
+                try {
+                    // Customise the styling of the base map using a JSON object defined
+                    // in a raw resource file.
+                    boolean success = mMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    this, R.raw.day_mode));
+
+                    if (!success) {
+                        Log.e(TAG, "Style parsing failed.");
+                    }
+                } catch (Resources.NotFoundException e) {
+                    Log.e(TAG, "Can't find style. Error: ", e);
+                }
+            }
+        }
+
         getGeofenceFromServer();
         scheduleServerStatusChecks();
 
@@ -135,6 +181,36 @@ public class PedestrianViewActivity extends AppCompatActivity implements OnMapRe
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        if (Constants.darkMode) {
+            try {
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                boolean success = mMap.setMapStyle(
+                        MapStyleOptions.loadRawResourceStyle(
+                                this, R.raw.night_mode));
+
+                if (!success) {
+                    Log.e(TAG, "Style parsing failed.");
+                }
+            } catch (Resources.NotFoundException e) {
+                Log.e(TAG, "Can't find style. Error: ", e);
+            }
+        } else {
+            try {
+                // Customise the styling of the base map using a JSON object defined
+                // in a raw resource file.
+                boolean success = mMap.setMapStyle(
+                        MapStyleOptions.loadRawResourceStyle(
+                                this, R.raw.day_mode));
+
+                if (!success) {
+                    Log.e(TAG, "Style parsing failed.");
+                }
+            } catch (Resources.NotFoundException e) {
+                Log.e(TAG, "Can't find style. Error: ", e);
+            }
+        }
+
         // Add a marker in Sydney and move the camera
         marker = mMap.addMarker(new MarkerOptions().position(tfhrcLatLng).title("Turner Fairbanks Highway Research Center"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tfhrcLatLng, defaultMapZoom));
@@ -153,11 +229,19 @@ public class PedestrianViewActivity extends AppCompatActivity implements OnMapRe
                 RestTemplate template = new RestTemplate();
                 template.getMessageConverters().add(mapper);
 
-                desc = template.getForObject(serverBaseUrl + relPedGeofenceUrl, GeofenceDescription.class);
-                geofence = new GeofenceFactory().buildGeofence(desc);
+                try {
+                    desc = template.getForObject(serverBaseUrl + relPedGeofenceUrl, GeofenceDescription.class);
+                    Log.i(TAG, "doInBackground: Successfully received driver geofence from server.");
+                    Log.i(TAG, "doInBackground: " + geofence.toString());
+                    geofence = new GeofenceFactory().buildGeofence(desc);
+                } catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Error communicating with server.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
 
-                Log.i(TAG, "doInBackground: Successfully received driver geofence from server.");
-                Log.i(TAG, "doInBackground: " + geofence.toString());
                 return null;
             }
 
@@ -289,7 +373,15 @@ public class PedestrianViewActivity extends AppCompatActivity implements OnMapRe
                             RestTemplate template = new RestTemplate();
                             template.getMessageConverters().add(mapper);
 
-                            String res = template.getForObject(serverBaseUrl + relStartLoggingUrl, String.class);
+                            try {
+                                String res = template.getForObject(serverBaseUrl + relStartLoggingUrl, String.class);
+                            } catch (Exception e) {
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(), "Error communicating with server.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
 
                             return null;
                         }
@@ -325,8 +417,15 @@ public class PedestrianViewActivity extends AppCompatActivity implements OnMapRe
                             MappingJackson2HttpMessageConverter mapper = new MappingJackson2HttpMessageConverter();
                             RestTemplate template = new RestTemplate();
                             template.getMessageConverters().add(mapper);
-
-                            String res = template.getForObject(serverBaseUrl + relStopLoggingUrl, String.class);
+                            try {
+                                String res = template.getForObject(serverBaseUrl + relStopLoggingUrl, String.class);
+                            } catch (Exception e) {
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(), "Error communicating with server.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
 
                             return null;
                         }
@@ -367,7 +466,15 @@ public class PedestrianViewActivity extends AppCompatActivity implements OnMapRe
                 RestTemplate template = new RestTemplate();
                 template.getMessageConverters().add(mapper);
 
-                res = template.getForObject(serverBaseUrl + relCrossingRequestUrl, CrossingRequestResponse.class);
+                try {
+                    res = template.getForObject(serverBaseUrl + relCrossingRequestUrl, CrossingRequestResponse.class);
+                } catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Error communicating with server.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
 
                 return null;
             }
@@ -382,9 +489,6 @@ public class PedestrianViewActivity extends AppCompatActivity implements OnMapRe
         locationManager.removeUpdates(this);
     }
 
-    /**
-     * Callback invoked when the menu is expanded
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -403,8 +507,13 @@ public class PedestrianViewActivity extends AppCompatActivity implements OnMapRe
     }
 
     /**
-     * Callback invoked when a menu item is selected by the user
+     * Launch the settings activity to adjust user preferences
      */
+    private void showSettingsMenu() {
+        Intent intent = new Intent(this, PreferencesActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -417,6 +526,9 @@ public class PedestrianViewActivity extends AppCompatActivity implements OnMapRe
                 return true;
             case R.id.acknowledgements_item:
                 displayAcknowledgements();
+                return true;
+            case R.id.settings_button:
+                showSettingsMenu();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -500,12 +612,22 @@ public class PedestrianViewActivity extends AppCompatActivity implements OnMapRe
                         UserRole.PEDESTRIAN);
 
                 long commsStartTime = System.currentTimeMillis();
-                template.postForObject(serverBaseUrl + relPedEventReportUrl, report, Void.class);
-                long commsEndTime = System.currentTimeMillis();
-                lastServerComms = commsEndTime;
-                latencyTracker.addDatapoint(commsEndTime - commsStartTime);
+                try {
+                    template.postForObject(serverBaseUrl + relPedEventReportUrl, report, Void.class);
+                    long commsEndTime = System.currentTimeMillis();
+                    lastServerComms = commsEndTime;
+                    latencyTracker.addDatapoint(commsEndTime - commsStartTime);
 
-                Log.i(TAG, "doInBackground: Successfully reported pedestrian event " + typeTmp.toString() + " to server.");
+                    Log.i(TAG, "doInBackground: Successfully reported pedestrian event " + typeTmp.toString() + " to server.");
+                } catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Error communicating with server.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Log.w(TAG, "Error communicating with server");
+                }
+
                 return null;
             }
         }.execute();

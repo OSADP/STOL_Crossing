@@ -2,19 +2,29 @@ package gov.dot.fhwa.saxton.crossingrequest.activities;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import gov.dot.fhwa.saxton.crossingrequest.R;
 import gov.dot.fhwa.saxton.crossingrequest.fragments.ServerStatusFragment;
+import gov.dot.fhwa.saxton.crossingrequest.messages.CrossingRequestResponse;
 
-/**
- * Initial activity displayed to the user when app is started, allows user to select between
- * pedestrian or motorist roles for the purpose of experimentation.
- */
+import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.relCrossingRequestUrl;
+import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.relStatusUrl;
+import static gov.dot.fhwa.saxton.crossingrequest.utils.Constants.serverBaseUrl;
+
 public class RoleSelectActivity extends AppCompatActivity implements ServerStatusFragment.OnFragmentInteractionListener {
 
     protected Button pedestrianSelectButton;
@@ -32,9 +42,6 @@ public class RoleSelectActivity extends AppCompatActivity implements ServerStatu
         serverStatusFragment = (ServerStatusFragment) getFragmentManager().findFragmentById(R.id.serverStatusFragment);
     }
 
-    /**
-     * Invoked when the user presses the Pedestrian button, loads the pedestrian activity
-     */
     public void onSelectPedRole(View view) {
         Log.i(TAG, "onSelectPedRole: Selected ped role for application");
         Intent intent = new Intent(this, PedestrianViewActivity.class);
@@ -42,9 +49,6 @@ public class RoleSelectActivity extends AppCompatActivity implements ServerStatu
         startActivity(intent);
     }
 
-    /**
-     * Invoked when the user presses the Motorist button, loads the motorist activity
-     */
     public void onSelectDriverRole(View view) {
         Intent intent = new Intent(this, DriverViewActivity.class);
         serverStatusFragment.stopQuerying();
@@ -53,6 +57,6 @@ public class RoleSelectActivity extends AppCompatActivity implements ServerStatu
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        // STUB
+
     }
 }

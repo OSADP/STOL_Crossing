@@ -13,11 +13,6 @@ public abstract class Geofence {
     protected boolean enteredRegion;
     protected double entranceHeading;
 
-    /**
-     * Check if a location is inside the region(s) bounded by the Geofence
-     * @param loc The location to test
-     * @return True, if inside, false o.w.
-     */
     public boolean checkInside(Location loc) {
         prevLock = curLoc;
         curLoc = loc;
@@ -33,9 +28,6 @@ public abstract class Geofence {
         return inside;
     }
 
-    /**
-     * Get the heading angle (determined by lat/lon coordinate changes) at which the geofence boundary was crossed
-     */
     public double getEntranceHeading() {
         if (!enteredRegion) {
             return -1;
@@ -43,17 +35,7 @@ public abstract class Geofence {
         return entranceHeading;
     }
 
-    /**
-     * The actual logic used to determine "insideness". To be defined by subclasses
-     */
     protected abstract boolean testInsideCondition(Location loc);
-
-    /**
-     * The actual logic used to determine if heading matters and if a given heading is acceptable
-     * @param loc The location to test
-     * @param heading The vehicle or pedestrian's heading at that location
-     * @return True if the heading is valid or heading doesn't matter, false o.w.
-     */
     public abstract boolean testHeading(Location loc, double heading);
 
     @Override

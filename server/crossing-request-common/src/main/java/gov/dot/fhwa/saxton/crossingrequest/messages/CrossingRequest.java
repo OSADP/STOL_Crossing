@@ -15,31 +15,18 @@ public class CrossingRequest {
         this.pedestrianId = pedestrianId;
     }
 
-    /**
-     * Get the ID associated with the mid-block crossing the request is for
-     */
     public int getCrossingId() {
         return crossingId;
     }
 
-    /**
-     * Get the ID of the pedestrian device making the request
-     */
     public int getPedestrianId() {
         return pedestrianId;
     }
 
-
-    /**
-     * Set the ID associated with the mid-block crossing the request is for
-     */
     public void setCrossingId(int crossingId) {
         this.crossingId = crossingId;
     }
 
-    /**
-     * Set the ID of the pedestrian device making the request
-     */
     public void setPedestrianId(int pedestrianId) {
         this.pedestrianId = pedestrianId;
     }

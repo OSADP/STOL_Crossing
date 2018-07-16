@@ -33,72 +33,42 @@ public class GeofenceDescription {
         this.regions = regions;
     }
 
-    /**
-     * Get the human readable name of this geofence
-     */
     public String getGeofenceName() {
         return geofenceName;
     }
 
-    /**
-     * Set the human readable name of this geofence
-     */
     public void setGeofenceName(String geofenceName) {
         this.geofenceName = geofenceName;
     }
 
-    /**
-     * Get the ID that uniquely identifies this version of the geofence
-     */
     public String getGeofenceUniqueID() {
         return geofenceUniqueID;
     }
 
-    /**
-     * Set the ID that uniquely identifies this version of the geofence
-     */
     public void setGeofenceUniqueID(String geofenceUniqueID) {
         this.geofenceUniqueID = geofenceUniqueID;
     }
 
-    /**
-     * Get the date string that represents when this geofence was last modified
-     */
     public String getGeofenceModificationDate() {
         return geofenceModificationDate;
     }
 
-    /**
-     * Set the date string that represents when this geofence was last modified
-     */
     public void setGeofenceModificationDate(String geofenceModificationDate) {
         this.geofenceModificationDate = geofenceModificationDate;
     }
 
-    /**
-     * Get the identifier that determines if this geofence pertains to the PEDESTRIAN or MOTORIST role
-     */
     public GeofenceRole getRole() {
         return role;
     }
 
-    /**
-     * Set the identifier that determines if this geofence pertains to the PEDESTRIAN or MOTORIST role
-     */
     public void setRole(GeofenceRole role) {
         this.role = role;
     }
 
-    /**
-     * Get the list of {@link ConvexPolygonRegion} associated with this geofence
-     */
     public List<ConvexPolygonRegion> getRegions() {
         return regions;
     }
 
-    /**
-     * Set the list of {@link ConvexPolygonRegion} associated with this geofence
-     */
     public void setRegions(List<ConvexPolygonRegion> regions) {
         this.regions = regions;
     }

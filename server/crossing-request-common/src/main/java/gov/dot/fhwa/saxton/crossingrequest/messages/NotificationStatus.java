@@ -17,47 +17,26 @@ public class NotificationStatus {
         this.activeSince = activeSince;
     }
 
-    /**
-     * Get the timestamp at which this notification status was generated
-     */
     public long getTimestamp() {
         return timestamp;
     }
 
-    /**
-     * Get whether the server notification of pedestrian crossing is active or inactive
-     * @return True if a crossing request has been accepted and not yet timed out, false o.w.
-     */
     public boolean isActive() {
         return active;
     }
 
-    /**
-     * Get the timestamp the notification request was accepted at
-     */
-    @Deprecated
     public long getActiveSince() {
         return activeSince;
     }
 
-    /**
-     * Set the timestamp at which this notification status was generated
-     */
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    /**
-     * Set whether the server notification of pedestrian crossing is active or inactive
-     */
     public void setActive(boolean active) {
         this.active = active;
     }
 
-    /**
-     * Get the timestamp the notification request was accepted at
-     */
-    @Deprecated
     public void setActiveSince(long activeSince) {
         this.activeSince = activeSince;
     }

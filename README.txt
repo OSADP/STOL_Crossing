@@ -1,7 +1,7 @@
 Open Source Overview
 ============================
 Pedestrian Mid-block Crossing Application
-Version 1.0.0
+Version 1.1.0
 The Pedestrian Mid-block Crossing Application is designed to allow pedestrians at configured mid-block cross walks communicate their intent to cross with drivers approaching the same mid-block cross walk. This is accomplished through usage of an android app and a cloud server component. Using the android app, the pedestrian (while in a geofence near the cross walk) can instruct the server to begin a message broadcast to all driver devices for a period of time long enough to complete the crossing. The driver's android app resembles an in-vehicle navigation app and serves to provide audio-visual feedback to the driver when it receives a broadcast from the server.
 
 License information

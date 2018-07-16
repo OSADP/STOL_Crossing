@@ -1,6 +1,7 @@
 package gov.dot.fhwa.saxton.crossingrequest.utils;
 
 import android.graphics.Color;
+import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -18,7 +19,7 @@ public class Constants {
     public static final int vehicleTriangleColor = Color.BLUE;
 
     // REST API parameters
-    public static final String serverBaseUrl = "127.0.0.1";
+    public static String serverBaseUrl = "http://sample-env.wi6rp8ykdn.us-east-1.elasticbeanstalk.com";
     public static final String relDriverGeofenceUrl = "/driver/geofence";
     public static final String relPedGeofenceUrl = "/ped/geofence";
     public static final String relCrossingRequestUrl = "/ped/requestCrossing";
@@ -29,6 +30,7 @@ public class Constants {
     public static final String relDriverEventReportUrl = "/driver/event";
     public static final String relPedDataReportUrl = "/ped/data";
     public static final String relPedEventReportUrl = "/ped/event";
+    public static boolean darkMode = false;
 
     // Server parameters
     public static final long dataReportDelay = 200;
