@@ -27,8 +27,3 @@ Documentation
 -------------
 The Pedestrian Mid-block Crossing Application is packaged with a Word document describing installation, configuration, and usage of the
 Server and Android application components. Also included is are the performance testing documentation and data sets.
-
-Web sites
----------
-The Pedestrian Mid-block Crossing Application software is distributed through the USDOT's JPO Open Source Application Development Portal (OSADP)
-http://itsforge.net/ 
