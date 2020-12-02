@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="gov.dot.fhwa.saxton.crossingrequest.activities.RoleSelectActivity">
+
+    <Button
+        android:id="@+id/pedSelectButton"
+        android:layout_width="173dp"
+        android:layout_height="103dp"
+        android:layout_marginTop="24dp"
+        android:drawableLeft="@drawable/ic_baseline_directions_walk_24px"
+        android:onClick="onSelectPedRole"
+        android:text="@string/role_pedestrian"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/infoText"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <Button
+        android:id="@+id/driverSelectButton"
+        android:layout_width="0dp"
+        android:layout_height="103dp"
+        android:layout_marginTop="-7dp"
+        android:drawableLeft="@drawable/ic_baseline_directions_car_24px"
+        android:onClick="onSelectDriverRole"
+        android:text="@string/role_driver"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/pedSelectButton"
+        app:layout_constraintRight_toRightOf="@+id/pedSelectButton"
+        app:layout_constraintTop_toBottomOf="@+id/pedSelectButton"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <TextView
+        android:id="@+id/infoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select role:"
+        android:textSize="24sp"
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="82dp"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/pedSelectButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <fragment
+        android:id="@+id/serverStatusFragment"
+        android:name="gov.dot.fhwa.saxton.crossingrequest.fragments.ServerStatusFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/fragment_server_status"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="56dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

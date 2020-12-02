@@ -1,0 +1,4 @@
+rootProject.name = 'CrossingRequestServer'
+include 'crossing-request-common'
+include 'crossing-request-main'
+

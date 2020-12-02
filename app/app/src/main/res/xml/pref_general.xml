@@ -1,0 +1,40 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="night_mode"
+        android:summary="Enable dark theme for map view"
+        android:title="Night Mode" />
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="<SERVER_URL>"
+        android:inputType="textUri"
+        android:key="server_url"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Server URL" />
+    <EditTextPreference
+        android:defaultValue="38.954920,-77.148812"
+        android:inputType="text"
+        android:key="default_map_location"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Default Map Location" />
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="A,B"
+        android:key="trial_pattern"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Trial Pattern" />
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it. -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+
+</PreferenceScreen>

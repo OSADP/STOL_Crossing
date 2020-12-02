@@ -1,0 +1,27 @@
+plugins {
+    id 'org.springframework.boot' version '1.5.3.RELEASE'
+}
+
+group 'gov.dot.fhwa.saxton'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+springBoot {
+    mainClass = "gov.dot.fhwa.saxton.crossingrequest.CrossingRequestServerMain"
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile project(':crossing-request-common')
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+    testCompile group: "org.springframework", name: "spring-test"
+}
