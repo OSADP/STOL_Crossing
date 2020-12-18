@@ -35,7 +35,6 @@ For usage information please see the "Pedestrian Mid-block Crossing Application 
 For complation and installation instructions please see the "Pedestrian Mid-block Crossing Application User Guide.docx" located in the root of this repository.
 
 ## Testing
-*Required - Specifics for how to run any test cases your project may have. If your test cases are automatically run as part of the build process, or you don't include any testing, specify that here.*
 
 To run the tests for Pedestrian Mid-block Crossing Application, please `cd` into the app or `server` directories and run
 ```
@@ -63,7 +62,7 @@ This project is licensed under the Apache License version 2.0 License - see the 
 Please read [CONTRIBUTING.md](Contributing.MD) for details on our Code of Conduct, the process for submitting pull requests to us, and how contributions will be released.
 
 # Contact Information
-Contact Name: Saxton Transportation Operations Laboratory
+Contact Name: Saxton Transportation Operations Laboratory  
 Contact Information: cavsupportservices@dot.gov
 
 # Acknowledgements
